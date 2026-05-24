@@ -349,13 +349,26 @@ async def capture_arkham_flow(coin_slug):
     user_data_dir = os.path.join(os.getcwd(), "playwright_chrome_data")
 
     async with async_playwright() as p:
-        browser = await p.chromium.launch_persistent_context(
-            user_data_dir=user_data_dir,
-            # headless=False,
+        # browser = await p.chromium.launch_persistent_context(
+        #     user_data_dir=user_data_dir,
+        #     # headless=False,
+        #     headless=True,
+        #     args=["--disable-blink-features=AutomationControlled"]
+        # )
+        # page = await browser.new_page()
+
+        browser = await p.chromium.launch(
             headless=True,
-            args=["--disable-blink-features=AutomationControlled"]
+            args=[
+                "--disable-blink-features=AutomationControlled",
+                "--no-sandbox",
+                "--disable-setuid-sandbox",
+                "--disable-dev-shm-usage"
+            ]
         )
+
         page = await browser.new_page()
+
         # Đặt kích thước màn hình lớn để thấy rõ biểu đồ
         await page.set_viewport_size({"width": 1366, "height": 1000})
 
